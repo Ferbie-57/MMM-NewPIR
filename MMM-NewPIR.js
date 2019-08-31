@@ -16,7 +16,6 @@ Module.register("MMM-NewPIR", {
     socketNotificationReceived: function (notification, payload) {
 
         if (notification === "USER_PRESENCE") {
-		if (
             	this.resetCountdown();
 		this.sendNotification('USER_PRESENCE', true);
         }
