@@ -10,22 +10,21 @@ Module.register("MMM-NewPIR", {
     start: function () {
         Log.log("[NewPIR] is started");
 	this.sendSocketNotification("CONFIG", this.config);
-        moment.locale(config.language);
     },
 
     socketNotificationReceived: function (notification, payload) {
 
         if (notification === "USER_PRESENCE") {
-            	this.resetCountdown();
-		this.sendNotification('USER_PRESENCE', true);
+		if (payload == true) {
+            		this.resetCountdown();
+		}
+		this.sendNotification('USER_PRESENCE', payload);
         }
 	if (notification === "NEWPIR_HIDING") {
 		this.Hiding();
-		this.sendNotification('NEWPIR_HIDING', true);
 	}
 	if (notification === "NEWPIR_SHOWING") {
 		this.Showing();
-		this.sendNotification('NEWPIR_SHOWING', true);
 	}
 
     },
@@ -36,7 +35,7 @@ Module.register("MMM-NewPIR", {
             //DOM creation complete, let's start the module
             this.resetCountdown();
         }
-	if (notification === 'HOTWORD_PAUSE') {
+	if (notification === 'HOTWORD_PAUSE') { // for MMM-HOTWORD
 	    this.sendSocketNotification("ASSIST");
 	}
     },
@@ -63,19 +62,19 @@ Module.register("MMM-NewPIR", {
         }, 1000);
     },
 
-       Hiding: function() {
-            var self = this;
+    Hiding: function() {
             MM.getModules().exceptModule(this).enumerate(function(module) {
                 module.hide(2000, null, {lockString:"NewPIR"})
             });
+	    this.sendNotification('NEWPIR_HIDING', true);
             console.log("[NewPIR] Hide All modules");
     },
 
-      Showing: function() {
-            var self = this;
+    Showing: function() {
             MM.getModules().exceptModule(this).enumerate(function(module) {
                 module.show(2000, null, {lockString:"NewPIR"})
             });
+	    this.sendNotification('NEWPIR_SHOWING', true);
             console.log("[NewPIR] Show All modules");
     },
 
