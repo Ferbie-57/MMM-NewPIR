@@ -32,7 +32,7 @@ To display the module insert it in the config.js file. Here is an example:
 | Option  | Description | Type | Default |
 | ------- | --- | --- | --- |
 | sensorPin | BCM-number of the pin | Integer | 21 |
-| delay | time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 60000 (60 seconds) |
+| delay | time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 15000 (15 seconds) |
 | turnOffDisplay | Should the display turn off after timeout? | Boolean | true |
 | EconomyMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
 
