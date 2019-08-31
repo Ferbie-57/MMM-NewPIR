@@ -1,0 +1,9 @@
+{
+	module: 'MMM-NewPIR',
+        config: {
+		sensorPin: 21,
+                delay: 60 * 1000,
+                turnOffDisplay: true,
+                EconomyMode: true
+        }
+},
