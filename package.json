@@ -3,23 +3,27 @@
   "version": "1.0.0",
   "description": "Magix Mirror PIR Module",
   "main": "MMM-NEWPIR.js",
+  "keywords": [
+    "magic mirror",
+    "module",
+    "sensor",
+    "PIR"
+  ],
   "dependencies": {
     "child_process": "^1.0.2",
-    "electron-rebuild": "^1.8.6",
     "onoff": "^2.0.0"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {
+    "electron-rebuild": "^1.8.6"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/bugsounet/MMM-NewPIR"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "bugsounet",
+  "license": "MIT",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/bugsounet/MMM-NewPIR/issues"
   },
-  "homepage": ""
+  "homepage": "https://github.com/bugsounet/MMM-NewPIR"
 }
