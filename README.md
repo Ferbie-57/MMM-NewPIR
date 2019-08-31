@@ -36,6 +36,11 @@ To display the module insert it in the config.js file. Here is an example:
 | turnOffDisplay | Should the display turn off after timeout? | Boolean | true |
 | EconomyMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
 
-# Change Log
-## 2019-08-31
+## Developer Notes
+- This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
+- This module broadcasts a `NEWPIR_HIDDING` and `NEWPIR_SHOWING` notification when it hide or show modules.
+- This module detect [MMM-HOTWORD](https://github.com/eouia/MMM-Hotword) with `HOTWORD_PAUSE` notification for wakeup screen
+
+## Change Log
+### 2019-08-31
 - initial commit
