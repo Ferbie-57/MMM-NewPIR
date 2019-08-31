@@ -44,3 +44,4 @@ To display the module insert it in the config.js file. Here is an example:
 ## Change Log
 ### 2019-08-31
 - initial commit
+- FIX : Loop in timer -- always display off -- cause USER_PRESENCE payload -- Cleaning Code
