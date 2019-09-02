@@ -4,6 +4,9 @@
 		sensorPin: 21,
                 delay: 60 * 1000,
                 turnOffDisplay: true,
-                EconomyMode: true
+                EconomyMode: true,
+		UseHotword: true,
+		HotWord : "HOTWORD_PAUSE",
+                HotWordModules : [ "MMM-AssistantMk2" , "MMM-JarvisFace" ]
         }
 },

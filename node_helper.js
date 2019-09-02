@@ -12,21 +12,18 @@ module.exports = NodeHelper.create({
 		if (notification === "ASSIST") { // Be back for Assistant
 			self.running = true;
                 	self.sendSocketNotification("USER_PRESENCE", true); // Presence Force
-                	self.sendSocketNotification("NEWPIR_SHOWING"); // Module diplay Force
                 	if (self.config.turnOffDisplay) {
 				exec("/usr/bin/vcgencmd display_power 1");
                 	}
                 	console.log("[NewPIR] Assistant Detected")
         	};
 
-        	if (notification === "CONFIG") {
+        	if (notification === "START") {
 	    		this.config = payload;
             		if (!self.running) { // Init for First Start
            			self.running = true;
         			self.sendSocketNotification("USER_PRESENCE", true); // Presence Force
-				if (self.config.turnOffDisplay) {
-					exec("/usr/bin/vcgencmd display_power 1"); //force HDMI ON
-				}
+				exec("/usr/bin/vcgencmd display_power 1"); //force HDMI ON
        	       	 		console.log("[NewPIR] Init Display")
             		};
 
@@ -34,17 +31,13 @@ module.exports = NodeHelper.create({
 
             		this.pir.watch(function (err, value) {
             			if (value == 1) {
-                    			//self.sendSocketNotification("USER_PRESENCE", true);
                 			if (!self.running) {
                         			self.running = true;
                         			if (self.config.turnOffDisplay) {
                             				exec("/usr/bin/vcgencmd display_power 1");
 			    				console.log("[NewPIR] Display ON")
                         			}
-						if (self.config.EnergyMode) {
-							self.sendSocketNotification("NEWPIR_SHOWING");
-							console.log("[NewPIR] Show ALL Modules")
-						}
+						self.sendSocketNotification("NEWPIR_SHOWING");
 						self.sendSocketNotification("USER_PRESENCE", true);
                     			}
                 		}
@@ -53,11 +46,7 @@ module.exports = NodeHelper.create({
         	} else if (notification === "TIMER_EXPIRED") {
         		self.running = false;
 			self.sendSocketNotification("USER_PRESENCE", false);
-			if (self.config.EnergyMode) {
-       				self.sendSocketNotification("NEWPIR_HIDING");
-       				console.log("[NewPIR] Hide ALL Modules")
-			}
-
+			self.sendSocketNotification("NEWPIR_HIDING");
 			if (self.config.turnOffDisplay) {
 				setTimeout(()=>{ // timer for display off after hiding
 					exec("/usr/bin/vcgencmd display_power 0")

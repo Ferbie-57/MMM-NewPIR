@@ -4,12 +4,15 @@ Module.register("MMM-NewPIR", {
         sensorPin: 21,
         delay: 15 * 1000,
         turnOffDisplay: true,
-	EnergyMode: true
+	EconomyMode: true,
+	UseHotword: true,
+	HotWord: "HOTWORD_PAUSE",
+	HotWordModules: [ "MMM-AssistantMk2" , "MMM-JarvisFace" ]
     },
 
     start: function () {
         Log.log("[NewPIR] is started");
-	this.sendSocketNotification("CONFIG", this.config);
+	this.sendSocketNotification("START", this.config);
     },
 
     socketNotificationReceived: function (notification, payload) {
@@ -20,10 +23,10 @@ Module.register("MMM-NewPIR", {
 		}
 		this.sendNotification('USER_PRESENCE', payload);
         }
-	if (notification === "NEWPIR_HIDING") {
+	if ((this.config.EconomyMode) && (notification === "NEWPIR_HIDING")) {
 		this.Hiding();
 	}
-	if (notification === "NEWPIR_SHOWING") {
+	if ((this.config.EconomyMode) && (notification === "NEWPIR_SHOWING")) {
 		this.Showing();
 	}
 
@@ -33,10 +36,15 @@ Module.register("MMM-NewPIR", {
 
         if (notification === 'DOM_OBJECTS_CREATED') {
             //DOM creation complete, let's start the module
-            this.resetCountdown();
+            	this.resetCountdown();
         }
-	if (notification === 'HOTWORD_PAUSE') { // for MMM-HOTWORD
-	    this.sendSocketNotification("ASSIST");
+	if ((this.config.UseHotword) && (notification === this.config.HotWord)) {
+	    	this.sendSocketNotification("ASSIST");
+	    	console.log("[NewPIR] HotWord Detected !");
+	    	this.Mini_module();
+	}
+	if ((this.config.UseHotword) && (notification === 'HOTWORD_RESUME')) {
+	    	this.Showing();
 	}
     },
 
@@ -70,13 +78,28 @@ Module.register("MMM-NewPIR", {
             console.log("[NewPIR] Hide All modules");
     },
 
-    Showing: function() {
+    Showing: function(payload) {
             MM.getModules().exceptModule(this).enumerate(function(module) {
-                module.show(2000, null, {lockString:"NewPIR"})
+               	module.show(2000, null, {force: true})
             });
 	    this.sendNotification('NEWPIR_SHOWING', true);
             console.log("[NewPIR] Show All modules");
     },
 
+    Mini_module: function() {
+		var mod = this.config.HotWordModules
+		MM.getModules().exceptModule(this).enumerate(function(module) {
+               		module.hide(15, null, {lockString:"NewPIR"})
+            	});
+
+		for (var i = 0; i < mod.length; i++) {
+			MM.getModules().enumerate((m) => {
+				if ( mod[i] == m.name ) {
+					m.show(15, {force :  true});
+					console.log("[NewPIR] Display Mini_module for ASSISTANT : " + mod[i]);
+				}
+			});
+		}
+  },
 
 });
