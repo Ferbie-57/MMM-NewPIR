@@ -23,6 +23,9 @@ To display the module insert it in the config.js file. Here is an example:
                 delay: 60 * 1000, // delay for time out
                 turnOffDisplay: true, // Turn off display
                 EconomyMode: true // hide all module
+		UseHotword: true, // use Hotword ?
+		HotWord : "HOTWORD_PAUSE", //hotword Notification
+		HotWordModules : [ "MMM-AssistantMk2" , "MMM-JarvisFace" ] // modules to display when hotword detected
         }
 },
 ```
@@ -35,6 +38,9 @@ To display the module insert it in the config.js file. Here is an example:
 | delay | time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 15000 (15 seconds) |
 | turnOffDisplay | Should the display turn off after timeout? | Boolean | true |
 | EconomyMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
+| UseHotword | Hotword detect when assistant is active. allows to display in full screen the desired modules | Boolean | true |
+| Hotword | Notification to detect to active HotWord | String | HOTWORD_PAUSE |
+| HotWordModules | Name of the modules to display when a hotword is detected | String |"MMM-AssistantMk2" , "MMM-JarvisFace" |
 
 ## Developer Notes
 - This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
@@ -45,3 +51,7 @@ To display the module insert it in the config.js file. Here is an example:
 ### 2019-08-31
 - initial commit
 - FIX : Loop in timer -- always display off -- cause USER_PRESENCE payload -- Cleaning Code
+### 2019-09-03
+- Hotword detection for Assistant
+- Show in full screen selectioned modules when hotword detected
+- ** Cleaning Code **
