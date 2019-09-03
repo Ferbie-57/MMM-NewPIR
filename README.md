@@ -41,6 +41,7 @@ To display the module insert it in the config.js file. Here is an example:
 | UseHotword | Hotword detect when assistant is active. allows to display in full screen the desired modules | Boolean | true |
 | Hotword | Notification to detect to active HotWord | String | HOTWORD_PAUSE |
 | HotWordModules | Name of the modules to display when a hotword is detected | String |"MMM-AssistantMk2" , "MMM-JarvisFace" |
+| Governor | Set CPU Governor on start. Available : conservative ondemand userspace powersave performance or set "" for no change | String | "" |
 
 ## Developer Notes
 - This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
@@ -55,3 +56,4 @@ To display the module insert it in the config.js file. Here is an example:
 - Hotword detection for Assistant
 - Show in full screen selectioned modules when hotword detected
 - ** Cleaning Code **
+- Set CPU Governor on start
