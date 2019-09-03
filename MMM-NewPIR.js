@@ -7,7 +7,8 @@ Module.register("MMM-NewPIR", {
 	EconomyMode: true,
 	UseHotword: true,
 	HotWord: "HOTWORD_PAUSE",
-	HotWordModules: [ "MMM-AssistantMk2" , "MMM-JarvisFace" ]
+	HotWordModules: [ "MMM-AssistantMk2" , "MMM-JarvisFace" ],
+	Governor : ""
     },
 
     start: function () {

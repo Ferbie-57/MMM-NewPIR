@@ -24,7 +24,17 @@ module.exports = NodeHelper.create({
            			self.running = true;
         			self.sendSocketNotification("USER_PRESENCE", true); // Presence Force
 				exec("/usr/bin/vcgencmd display_power 1"); //force HDMI ON
-       	       	 		console.log("[NewPIR] Init Display")
+       	       	 		console.log("[NewPIR] Init Display...")
+				// Governor : conservative ondemand userspace powersave performance
+				if ((this.config.Governor == "conservative") || (this.config.Governor == "ondemand") || (this.config.Governor == "userspace") || (this.config.Governor == "powersave") || (this.config.Governor == "performance")) {
+					exec("echo " + this.config.Governor + " | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor");
+					console.log("[NewPIR] Init Governor : " +  this.config.Governor);
+				} else {
+					if(this.config.Governor == "")
+						console.log("[NewPIR] Init Governor : Desactived.");
+					else
+						console.log("[NewPIR] Init Governor : Error ! Unknow Governor.");
+				}
             		};
 
             		this.pir = new Gpio(this.config.sensorPin, 'in', 'both');
