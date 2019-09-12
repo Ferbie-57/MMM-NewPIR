@@ -1,6 +1,6 @@
 {
   "name": "mmm-newpir",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "Magix Mirror PIR Module",
   "main": "MMM-NEWPIR.js",
   "keywords": [
