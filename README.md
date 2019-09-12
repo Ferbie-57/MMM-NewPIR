@@ -57,3 +57,7 @@ To display the module insert it in the config.js file. Here is an example:
 - Show in full screen selectioned modules when hotword detected
 - ** Cleaning Code **
 - Set CPU Governor on start
+### 2019-09-12
+- hdmi power on don't work sometime (solved)
+- Add HDMI checkDisplay Function
+- Add debug (developper)
