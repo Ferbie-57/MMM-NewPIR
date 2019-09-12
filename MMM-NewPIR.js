@@ -8,7 +8,8 @@ Module.register("MMM-NewPIR", {
 	UseHotword: true,
 	HotWord: "HOTWORD_PAUSE",
 	HotWordModules: [ "MMM-AssistantMk2" , "MMM-JarvisFace" ],
-	Governor : ""
+	Governor : "",
+	debug: false
     },
 
     start: function () {
@@ -49,18 +50,12 @@ Module.register("MMM-NewPIR", {
 	}
     },
 
-    resetDefaults: function () {
-        this.counter = this.config.delay;
-    },
-
     resetCountdown: function () {
         var self = this;
         clearInterval(self.interval);
-        if (self.customCounter != null) {
-            self.counter = this.customCounter;
-        } else {
-            self.resetDefaults();
-        }
+	self.counter = this.config.delay;
+	//for debug
+        //self.updateDom();
 
         self.interval = setInterval(function () {
             self.counter -= 1000;
@@ -68,12 +63,14 @@ Module.register("MMM-NewPIR", {
                 self.sendSocketNotification('TIMER_EXPIRED');
 		clearInterval(self.interval);
             }
+	    //for debug
+	    //self.updateDom();
         }, 1000);
     },
 
     Hiding: function() {
             MM.getModules().exceptModule(this).enumerate(function(module) {
-                module.hide(2000, null, {lockString:"NewPIR"})
+                module.hide(1000, null, {lockString:"NewPIR"})
             });
 	    this.sendNotification('NEWPIR_HIDING', true);
             console.log("[NewPIR] Hide All modules");
@@ -81,7 +78,7 @@ Module.register("MMM-NewPIR", {
 
     Showing: function(payload) {
             MM.getModules().exceptModule(this).enumerate(function(module) {
-               	module.show(2000, null, {force: true})
+               	module.show(1000, null, {force: true})
             });
 	    this.sendNotification('NEWPIR_SHOWING', true);
             console.log("[NewPIR] Show All modules");
@@ -101,6 +98,37 @@ Module.register("MMM-NewPIR", {
 				}
 			});
 		}
-  },
+    },
+
+
+// For debug
+/*
+
+    getDom: function () {
+        var self = this;
+
+        var html = document.createElement("div");
+        html.className = "wrapper";
+
+        if (typeof self.counter !== "undefined") {
+        	var time = document.createElement("div");
+                time.className = "time";
+		if (this.config.debug) {
+                	time.innerText = new Date(this.counter).toUTCString().match(/\d{2}:\d{2}:\d{2}/)[0];
+		}
+                html.appendChild(time);
+        }
+
+        return html;
+    },
+
+    getStyles: function () {
+        return ["mmm-newpir.css"];
+    },
+
+    getScripts: function () {
+        return ["moment.js"];
+    },
+*/
 
 });

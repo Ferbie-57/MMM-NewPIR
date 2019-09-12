@@ -13,7 +13,7 @@ module.exports = NodeHelper.create({
 			self.running = true;
                 	self.sendSocketNotification("USER_PRESENCE", true); // Presence Force
                 	if (self.config.turnOffDisplay) {
-				exec("/usr/bin/vcgencmd display_power 1");
+				exec("/usr/bin/vcgencmd display_power 1"); // and Force HDMI power on
                 	}
                 	console.log("[NewPIR] Assistant Detected")
         	};
@@ -25,6 +25,7 @@ module.exports = NodeHelper.create({
         			self.sendSocketNotification("USER_PRESENCE", true); // Presence Force
 				exec("/usr/bin/vcgencmd display_power 1"); //force HDMI ON
        	       	 		console.log("[NewPIR] Init Display...")
+				// Init Display is ok, Let's Init Governor now !
 				// Governor : conservative ondemand userspace powersave performance
 				if ((this.config.Governor == "conservative") || (this.config.Governor == "ondemand") || (this.config.Governor == "userspace") || (this.config.Governor == "powersave") || (this.config.Governor == "performance")) {
 					exec("echo " + this.config.Governor + " | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor");
@@ -37,18 +38,24 @@ module.exports = NodeHelper.create({
 				}
             		};
 
+			// Gpio sensor test pin
             		this.pir = new Gpio(this.config.sensorPin, 'in', 'both');
-
             		this.pir.watch(function (err, value) {
             			if (value == 1) {
+					// Check HDMI power state
+					self.checkDisplay();
+					// send user presence for reset counter
+					self.sendSocketNotification("USER_PRESENCE", true);
+					setTimeout(()=>{ // timeout For Result display !?!?
+						//console.log("[NewPIR] DisplayResult : " + this.DisplayResult)
+						if (this.DisplayResult == "0" && self.config.turnOffDisplay) {
+							exec("/usr/bin/vcgencmd display_power 1");
+							console.log("[NewPIR] Display ON")
+						}
+					}, 600);
                 			if (!self.running) {
                         			self.running = true;
-                        			if (self.config.turnOffDisplay) {
-                            				exec("/usr/bin/vcgencmd display_power 1");
-			    				console.log("[NewPIR] Display ON")
-                        			}
 						self.sendSocketNotification("NEWPIR_SHOWING");
-						self.sendSocketNotification("USER_PRESENCE", true);
                     			}
                 		}
             		});
@@ -58,13 +65,21 @@ module.exports = NodeHelper.create({
 			self.sendSocketNotification("USER_PRESENCE", false);
 			self.sendSocketNotification("NEWPIR_HIDING");
 			if (self.config.turnOffDisplay) {
-				setTimeout(()=>{ // timer for display off after hiding
-					exec("/usr/bin/vcgencmd display_power 0")
-				},2000);
+				exec("/usr/bin/vcgencmd display_power 0");
 				console.log("[NewPIR] Display OFF")
 			}
 		}
    	},
+
+
+	// checkDisplay : DisplayResult return => 0 when HDMI power Off,  1 when HDMI power On
+	checkDisplay: function(power) {
+		exec("/usr/bin/vcgencmd display_power", (err, stdout, stderr)=> {
+			if (err == null) {
+				var displaySh = stdout.trim();
+				DisplayResult = displaySh.substr(displaySh.length -1);
+				//console.log("[NewPIR] Test -- Fonction checkDisplay: " + DisplayResult);
+			}
+		})
+	}
 });
-
-
