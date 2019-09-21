@@ -22,7 +22,7 @@ To display the module insert it in the config.js file. Here is an example:
 		sensorPin: 21,
                 delay: 60 * 1000, // delay for time out
                 turnOffDisplay: true, // Turn off display
-                EconomyMode: true // hide all module
+                EconomyMode: true, // hide all module
 		UseHotword: true, // use Hotword ?
 		HotWord : "HOTWORD_PAUSE", //hotword Notification
 		HotWordModules : [ "MMM-AssistantMk2" , "MMM-JarvisFace" ] // modules to display when hotword detected
