@@ -6,8 +6,12 @@
                 turnOffDisplay: true, // turn off display
                 EconomyMode: true, // hide all modules
 		UseHotword: true, // use Assistant Hotword detection ?
-		HotWord : "HOTWORD_PAUSE", // Notification when hotword is detected
+		Use_HotWordModules : true, // Display HotWordModules ?
                 HotWordModules : [ "MMM-AssistantMk2" , "MMM-JarvisFace" ], // modules to display when hotword detected (the other modules will be hidden)
+		Use_Page: false, // use MMM-Page ?
+                Page_Jarvis: 5, // Page number to display Jarvis
+                Page_Showing: 0, // Page number to display home screen
+                Page_Hiding: 4, // Page number to display Hiding page
 		Governor : "" // Set CPU Governor : "conservative"  "ondemand"  "userspace"  "powersave"  "performance" or set "" for no change
         }
 },
