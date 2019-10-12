@@ -1,14 +1,19 @@
 Module.register("MMM-NewPIR", {
 
     defaults: {
+	useSensor: true,
         sensorPin: 21,
         delay: 15 * 1000,
         turnOffDisplay: true,
 	EconomyMode: true,
 	UseHotword: true,
-	HotWord: "HOTWORD_PAUSE",
+	Use_HotWordModules: false,
 	HotWordModules: [ "MMM-AssistantMk2" , "MMM-JarvisFace" ],
-	Governor : "",
+	Governor: "",
+	Use_Page: true,
+	Page_Jarvis: 4,
+	Page_Showing: 0,
+	Page_Hiding: 5,
 	debug: false
     },
 
@@ -25,11 +30,17 @@ Module.register("MMM-NewPIR", {
 		}
 		this.sendNotification('USER_PRESENCE', payload);
         }
-	if ((this.config.EconomyMode) && (notification === "NEWPIR_HIDING")) {
+	if ((this.config.EconomyMode) && (notification === "NEWPIR_HIDING") && (!this.config.Use_Page)) {
 		this.Hiding();
 	}
-	if ((this.config.EconomyMode) && (notification === "NEWPIR_SHOWING")) {
+	if ((this.config.EconomyMode) && (notification === "NEWPIR_HIDING") && (this.config.Use_Page)) {
+		this.sendNotification("PAGE_CHANGED", this.config.Page_Hiding);
+	}
+	if ((this.config.EconomyMode) && (notification === "NEWPIR_SHOWING") && (!this.config.Use_Page)) {
 		this.Showing();
+	}
+	if ((this.config.EconomyMode) && (notification === "NEWPIR_SHOWING") && (this.config.Use_Page)) {
+		this.sendNotification("PAGE_CHANGED", this.config.Page_Showing);
 	}
 
     },
@@ -40,13 +51,29 @@ Module.register("MMM-NewPIR", {
             //DOM creation complete, let's start the module
             	this.resetCountdown();
         }
-	if ((this.config.UseHotword) && (notification === this.config.HotWord)) {
+	if (notification === "USER_PRESENCE") {
+                if (payload == true) {
+                        this.resetCountdown();
+			this.sendSocketNotification("WAKEUP");
+		} else {
+			this.sendSocketNotification("TIMER_EXPIRED");
+		}
+	}
+	if ((this.config.UseHotword) && (notification === 'HOTWORD_PAUSE')) {
 	    	this.sendSocketNotification("ASSIST");
 	    	console.log("[NewPIR] HotWord Detected !");
-	    	this.Mini_module();
+		if ((this.config.Use_HotWordModules) && (!this.config.Use_Page)) {
+			this.Mini_module();
+		}
+		if ((!this.config.Use_HotWordModules) && (this.config.Use_Page)) {
+			 this.sendNotification("PAGE_CHANGED", this.config.Page_Jarvis);
+		}
 	}
-	if ((this.config.UseHotword) && (notification === 'HOTWORD_RESUME')) {
+	if ((this.config.UseHotword) && (notification === 'HOTWORD_RESUME') && (this.config.Use_HotWordModules) && (!this.config.Use_Page)) {
 	    	this.Showing();
+	}
+        if ((this.config.UseHotword) && (notification === 'HOTWORD_RESUME') && (!this.config.Use_HotWordModules) && (this.config.Use_Page)) {
+		this.sendNotification("PAGE_CHANGED", this.config.Page_Showing);
 	}
     },
 
@@ -55,7 +82,7 @@ Module.register("MMM-NewPIR", {
         clearInterval(self.interval);
 	self.counter = this.config.delay;
 	//for debug
-        //self.updateDom();
+        self.updateDom();
 
         self.interval = setInterval(function () {
             self.counter -= 1000;
@@ -64,36 +91,39 @@ Module.register("MMM-NewPIR", {
 		clearInterval(self.interval);
             }
 	    //for debug
-	    //self.updateDom();
+	    self.updateDom();
         }, 1000);
     },
 
     Hiding: function() {
+	    var self = this;
             MM.getModules().exceptModule(this).enumerate(function(module) {
-                module.hide(1000, null, {lockString:"NewPIR"})
+                module.hide(1000, null, {lockString: self.identifier})
             });
 	    this.sendNotification('NEWPIR_HIDING', true);
             console.log("[NewPIR] Hide All modules");
     },
 
     Showing: function(payload) {
+	    var self = this;
             MM.getModules().exceptModule(this).enumerate(function(module) {
-               	module.show(1000, null, {force: true})
+               	module.show(1000, null, {lockString: self.identifier})
             });
 	    this.sendNotification('NEWPIR_SHOWING', true);
             console.log("[NewPIR] Show All modules");
     },
 
     Mini_module: function() {
+		var self = this;
 		var mod = this.config.HotWordModules
 		MM.getModules().exceptModule(this).enumerate(function(module) {
-               		module.hide(15, null, {lockString:"NewPIR"})
+               		module.hide(15, null, {lockString: self.identifier})
             	});
 
 		for (var i = 0; i < mod.length; i++) {
 			MM.getModules().enumerate((m) => {
 				if ( mod[i] == m.name ) {
-					m.show(15, {force :  true});
+					m.show(15, {lockString: self.identifier});
 					console.log("[NewPIR] Display Mini_module for ASSISTANT : " + mod[i]);
 				}
 			});
@@ -102,7 +132,7 @@ Module.register("MMM-NewPIR", {
 
 
 // For debug
-/*
+
 
     getDom: function () {
         var self = this;
@@ -129,6 +159,6 @@ Module.register("MMM-NewPIR", {
     getScripts: function () {
         return ["moment.js"];
     },
-*/
+
 
 });

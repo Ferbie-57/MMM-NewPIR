@@ -9,13 +9,21 @@ module.exports = NodeHelper.create({
 
     	socketNotificationReceived: function (notification, payload) {
         	const self = this;
-		if (notification === "ASSIST") { // Be back for Assistant
+		if (notification === "WAKEUP") {
+			self.running = true;
+			if (self.config.turnOffDisplay) {
+				exec("/usr/bin/vcgencmd display_power 1");
+			}
+			console.log("[NewPIR] Wake Up Detected")
+		}
+
+		if (notification === "ASSIST") { // Be back For Assistant
 			self.running = true;
                 	self.sendSocketNotification("USER_PRESENCE", true); // Presence Force
                 	if (self.config.turnOffDisplay) {
 				exec("/usr/bin/vcgencmd display_power 1"); // and Force HDMI power on
                 	}
-                	console.log("[NewPIR] Assistant Detected")
+                	console.log("[NewPIR] Wake Up Detected")
         	};
 
         	if (notification === "START") {
@@ -37,28 +45,33 @@ module.exports = NodeHelper.create({
 						console.log("[NewPIR] Init Governor : Error ! Unknow Governor.");
 				}
             		};
-
-			// Gpio sensor test pin
-            		this.pir = new Gpio(this.config.sensorPin, 'in', 'both');
-            		this.pir.watch(function (err, value) {
-            			if (value == 1) {
-					// Check HDMI power state
-					self.checkDisplay();
-					// send user presence for reset counter
-					self.sendSocketNotification("USER_PRESENCE", true);
-					setTimeout(()=>{ // timeout For Result display !?!?
-						//console.log("[NewPIR] DisplayResult : " + this.DisplayResult)
-						if (this.DisplayResult == "0" && self.config.turnOffDisplay) {
-							exec("/usr/bin/vcgencmd display_power 1");
-							console.log("[NewPIR] Display ON")
-						}
-					}, 600);
-                			if (!self.running) {
-                        			self.running = true;
-						self.sendSocketNotification("NEWPIR_SHOWING");
-                    			}
-                		}
-            		});
+			if (this.config.useSensor) {
+				console.log("[New-Pir] Sensor Active " + this.config.useSensor)
+				// Gpio sensor test pin
+            			this.pir = new Gpio(this.config.sensorPin, 'in', 'both');
+            			this.pir.watch(function (err, value) {
+					if (self.config.debug) {
+						console.log("[New-Pir] Sensor read value : " + value)
+					}
+            				if (value == 1) {
+						// Check HDMI power state
+						self.checkDisplay();
+						// send user presence for reset counter
+						self.sendSocketNotification("USER_PRESENCE", true);
+						setTimeout(()=>{ // timeout For Result display !?!?
+							if (self.config.debug) console.log("[NewPIR] DisplayResult : " + this.DisplayResult)
+							if (this.DisplayResult == "0" && self.config.turnOffDisplay) {
+								exec("/usr/bin/vcgencmd display_power 1");
+								console.log("[NewPIR] Display ON")
+							}
+						}, 600);
+                				if (!self.running) {
+                        				self.running = true;
+							self.sendSocketNotification("NEWPIR_SHOWING");
+                    				}
+                			}
+            			});
+			}
 
         	} else if (notification === "TIMER_EXPIRED") {
         		self.running = false;
