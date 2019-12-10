@@ -1,3 +1,11 @@
 .last{
     font-size: small;
 }
+
+#NEWPIR {
+    font-size: small;
+}
+
+#NEWPIR.hidden {
+    display: none;
+} 

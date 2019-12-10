@@ -84,7 +84,6 @@ module.exports = NodeHelper.create({
 		}
    	},
 
-
 	// checkDisplay : DisplayResult return => 0 when HDMI power Off,  1 when HDMI power On
 	checkDisplay: function(power) {
 		exec("/usr/bin/vcgencmd display_power", (err, stdout, stderr)=> {
