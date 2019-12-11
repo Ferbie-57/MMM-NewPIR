@@ -40,6 +40,7 @@ To display the module insert it in the config.js file. Here is an example:
 
 ## Developer Notes
 - This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
+- This module receive `USER_PRESENCE` notification with the payload `true` to force user presence or `false` to force delay for time out. 
 - This module broadcasts a `NEWPIR_HIDDING` and `NEWPIR_SHOWING` notification when it hide or show all modules.
 
 ## Change Log
