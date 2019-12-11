@@ -73,6 +73,7 @@ Module.register("MMM-NewPIR", {
       MM.getModules().enumerate(function(module) {
         module.hide(1000, {lockString: self.identifier})
       });
+      this.sendNotification("NEWPIR_HIDING");
       console.log("[NewPIR] Hide All modules");
     },
 
@@ -81,6 +82,7 @@ Module.register("MMM-NewPIR", {
       MM.getModules().enumerate(function(module) {
         module.show(1000, {lockString: self.identifier})
       });
+      this.sendNotification("NEWPIR_SHOWING");
       console.log("[NewPIR] Show All modules");
     },
 
