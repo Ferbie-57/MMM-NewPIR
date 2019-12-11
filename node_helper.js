@@ -58,7 +58,7 @@ module.exports = NodeHelper.create({
     var self = this
     this.pir = new Gpio(this.config.sensorPin, 'in', 'both')
     this.pir.watch(function (err, value) {
-      if (this.config.debug) console.log("[NewPIR] Sensor read value : " + value)
+      if (self.config.debug) console.log("[NewPIR] Sensor read value : " + value)
       if (value == 1) {
         self.sendSocketNotification("RESET_COUNTER")
         self.WantedDisplay(true)
