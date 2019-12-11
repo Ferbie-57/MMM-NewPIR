@@ -87,8 +87,8 @@ Module.register("MMM-NewPIR", {
     getDom: function () {
       var wrapper = document.createElement("div");
       wrapper.id = "NEWPIR";
-      if (!this.config.debug) wrapper.classList.add("hidden")
-      wrapper.className = "counter"
+      if (!this.config.debug) wrapper.className = "hidden"
+      wrapper.classList.add("counter")
       wrapper.textContent = "--:--:--"
       return wrapper;
     },
