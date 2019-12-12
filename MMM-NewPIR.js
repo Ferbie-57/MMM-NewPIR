@@ -5,11 +5,13 @@
 
 Module.register("MMM-NewPIR", {
     defaults: {
+      useSensor: true,
       sensorPin: 21,
       delay: 60 * 1000,
       turnOffDisplay: true,
-      EconomyMode: true,
-      Governor: "",
+      ecoMode: true,
+      governor: "",
+      eventWakeup: ["ASSISTANT_ACTIVATE" , "ASSISTANT_STANDBY"],
       debug: false
     },
 
@@ -18,7 +20,14 @@ Module.register("MMM-NewPIR", {
       this.interval = null
       console.log("[NewPIR] is now started")
       this.config = this.configAssignment({}, this.defaults, this.config)
-      this.sendSocketNotification("INIT", this.config)
+      this.helperConfig = {
+          "sensor" : this.config.useSensor,
+          "pin": this.config.sensorPin,
+          "display": this.config.turnOffDisplay,
+          "governor": this.config.governor,
+          "debug": this.config.debug
+      }
+      this.sendSocketNotification("INIT", this.helperConfig)
     },
 
     socketNotificationReceived: function (notification, payload) {
@@ -26,12 +35,12 @@ Module.register("MMM-NewPIR", {
         case "RESET_COUNTER":
           this.resetCountdown()
           break
-        case "USER_PRESENCE":
-          this.sendNotification("USER_PRESENCE", payload)
-          if (this.config.EconomyMode) {
+        case "PRESENCE":
+          if (this.config.ecoMode) {
             if (payload) this.Showing()
             else this.Hiding()
           }
+          this.sendNotification("USER_PRESENCE", payload)
           break
       }
     },
@@ -46,14 +55,34 @@ Module.register("MMM-NewPIR", {
           if (payload == true) {
             this.resetCountdown()
             this.sendSocketNotification("WAKEUP")
-          } else {
-	    clearInterval(this.interval)
-            var counter = document.querySelector("#NEWPIR.counter")
-            counter.textContent = "00:00:00"
-            this.counter = 0
-            this.sendSocketNotification("TIMER_EXPIRED")
-          }
+          } else ForceExpire()
           break
+        case "MODULE_DOM_CREATED":
+        case "ALL_MODULES_STARTED":
+        case "SHOW_ALERT":
+        case "SHOW_ALERT":
+        case "HIDE_ALERT":
+        case "CLOCK_SECOND":
+        case "CLOCK_MINUTE":
+        case "CALENDAR_EVENTS":
+        case "CURRENTWEATHER_DATA":
+        case "ADD_FEED":
+        case "NEWS_FEED_UPDATE":
+        case "NEWS_FEED":
+          // just ignore all standard notification
+          break
+        default :
+          this.scanOtherNotification(notification)
+          break
+      }
+    },
+
+    scanOtherNotification: function (notification) {
+      for (let [item, value] of Object.entries(this.config.eventWakeup)) {
+        if (value == notification) {
+		this.notificationReceived("USER_PRESENCE", true, this.name)
+		console.log("[NewPIR] Event Wakeup: " + notification)
+        }
       }
     },
 
@@ -74,13 +103,20 @@ Module.register("MMM-NewPIR", {
       }, 1000)
     },
 
+    ForceExpire: function(){
+      clearInterval(this.interval)
+      var counter = document.querySelector("#NEWPIR.counter")
+      counter.textContent = "00:00:00"
+      this.counter = 0
+      this.sendSocketNotification("TIMER_EXPIRED")
+    },
+
     Hiding: function() {
       var self = this
       MM.getModules().enumerate(function(module) {
         module.hide(1000, {lockString: self.identifier})
       })
-      this.sendNotification("NEWPIR_HIDING")
-      console.log("[NewPIR] Hide All modules")
+      console.log("[NewPIR] Hide All modules.")
     },
 
     Showing: function(payload) {
@@ -88,8 +124,7 @@ Module.register("MMM-NewPIR", {
       MM.getModules().enumerate(function(module) {
         module.show(1000, {lockString: self.identifier})
       })
-      this.sendNotification("NEWPIR_SHOWING")
-      console.log("[NewPIR] Show All modules")
+      console.log("[NewPIR] Show All modules.")
     },
 
     getDom: function () {

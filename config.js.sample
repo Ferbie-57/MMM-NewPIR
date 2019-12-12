@@ -2,11 +2,13 @@
 	module: 'MMM-NewPIR',
 	position: 'top_left',
         config: {
+		useSensor: true, // use sensor
 		sensorPin: 21, // sensor pin out
                 delay: 60 * 1000, // delay for time out
                 turnOffDisplay: true, // turn off display
-                EconomyMode: true, // hide all modules
-		Governor : "", // Set CPU Governor : "conservative"  "ondemand"  "userspace"  "powersave"  "performance" or set "" for no change
+                ecoMode: true, // hide all modules
+		governor : "", // Set CPU Governor : "conservative"  "ondemand"  "userspace"  "powersave"  "performance" or set "" for no change
+		eventWakeup: ["ASSISTANT_ACTIVATE" , "ASSISTANT_STANDBY"], // event notification for screen wakeup
 		debug: false // debug mode
         }
 },

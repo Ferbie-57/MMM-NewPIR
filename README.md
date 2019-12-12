@@ -32,19 +32,23 @@ To display the module insert it in the config.js file. Here is an example:
 
 | Option  | Description | Type | Default |
 | ------- | --- | --- | --- |
-| sensorPin | BCM-number of the pin | Integer | 21 |
-| delay | time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 15000 (15 seconds) |
+| useSensor | Use sensor or not | Boolean | true |
+| sensorPin | BCM-number of the sensor pin | Integer | 21 |
+| delay | Time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 60000 (1 minutes) |
 | turnOffDisplay | Should the display turn off after timeout? | Boolean | true |
-| EconomyMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
-| Governor | Set CPU Governor on start. Available : conservative ondemand userspace powersave performance or set "" for no change | String | "" |
+| ecoMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
+| governor | Set CPU Governor on start. Available : conservative ondemand userspace powersave performance or set "" for no change | String | "" |
+| eventWakeup | Wake up screen on special notification events | Object | ["ASSISTANT_ACTIVATE"] | 
 
 ## Developer Notes
 - This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
-- This module receive `USER_PRESENCE` notification with the payload `true` to force user presence or `false` to force delay for time out. 
-- This module broadcasts a `NEWPIR_HIDDING` and `NEWPIR_SHOWING` notification when it hide or show all modules.
+- This module receive `USER_PRESENCE` notification with the payload `true` to force user presence or `false` to force delay to time out. 
 
 ## Change Log
 
+### 2019-12-12
+- add Events notification for wakeup screen
+- add useSensor feature
 ### 2019-12-11
 - V2 initial commit
 - Rewrite code
