@@ -1,0 +1,7 @@
+#NEWPIR {
+    font-size: small;
+}
+
+#NEWPIR.hidden {
+    display: none;
+} 
