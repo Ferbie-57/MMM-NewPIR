@@ -48,19 +48,4 @@ To display the module insert it in the config.js file. Here is an example:
 ### 2019-12-11
 - V2 initial commit
 - Rewrite code
-### 2019-10-12
-- Add MMM-Page features
-- Add USER_PRESENCE incomming notification
-### 2019-09-12
-- hdmi power on don't work sometime (solved)
-- Add HDMI checkDisplay Function
-- Add debug (developper)
-### 2019-09-03
-- Hotword detection for Assistant
-- Show in full screen selectioned modules when hotword detected
-- ** Cleaning Code **
-- Set CPU Governor on start
-### 2019-08-31
-- initial commit
-- FIX : Loop in timer -- always display off -- cause USER_PRESENCE payload -- Cleaning Code
 
