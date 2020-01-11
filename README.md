@@ -1,12 +1,10 @@
 # MMM-NewPIR
 MMM-NewPIR is a module for the [MagicMirror](https://github.com/MichMich/MagicMirror) project by [Michael Teeuw](https://github.com/MichMich).
 
-This module is based on [MMM-PIR](https://github.com/mboskamp/MMM-PIR) project by [Miklas Boskamp](https://github.com/mboskamp)
-
 It uses a PIR sensor attached to your raspberry pi's GPIO pins to check for users. After a configurated time without any user interaction the display will turn off and hide all module for economy mode.
 
 ## Installation
-Cline the module into your MagicMirror module folder and execute `npm intall` in the module's directory.
+Clone the module into your MagicMirror module folder and execute `npm intall` in the module's directory.
 ```
 git clone https://github.com/bugsounet/MMM-NewPIR.git
 cd MMM-NewPIR
@@ -38,7 +36,6 @@ To display the module insert it in the config.js file. Here is an example:
 | turnOffDisplay | Should the display turn off after timeout? | Boolean | true |
 | ecoMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
 | governor | Set CPU Governor on start. Available : conservative ondemand userspace powersave performance or set "" for no change | String | "" |
-| eventWakeup | Wake up screen on special notification events | Object | ["ASSISTANT_ACTIVATE"] | 
 
 ## Developer Notes
 - This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
@@ -47,7 +44,6 @@ To display the module insert it in the config.js file. Here is an example:
 ## Change Log
 
 ### 2019-12-12
-- add Events notification for wakeup screen
 - add useSensor feature
 ### 2019-12-11
 - V2 initial commit
