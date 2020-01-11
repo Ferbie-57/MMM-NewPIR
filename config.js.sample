@@ -8,7 +8,6 @@
                 turnOffDisplay: true, // turn off display
                 ecoMode: true, // hide all modules
 		governor : "", // Set CPU Governor : "conservative"  "ondemand"  "userspace"  "powersave"  "performance" or set "" for no change
-		eventWakeup: ["ASSISTANT_ACTIVATE" , "ASSISTANT_STANDBY"], // event notification for screen wakeup
 		debug: false // debug mode
         }
 },
