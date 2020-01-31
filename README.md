@@ -15,19 +15,23 @@ cd MMM-NewPIR
 npm install
 ```
 
+## Note for RPI4 user
+RPI4 firmware not support actually `vcgencmd display_power` command.
+
+So, turn off display should not working
+
 ## Configuration
 To display the module insert it in the config.js file. Here is an example:
 ```
 {
-	module: 'MMM-NewPIR',
-        config: {
-		useSensor: true // set to false if you don't use sensor
-		sensorPin: 21, // sensor pin out
-                delay: 60 * 1000, // delay for time out
-                turnOffDisplay: true, // turn off display
-                EconomyMode: true, // hide all modules
-		Governor : "" // Set CPU Governor : "conservative"  "ondemand"  "userspace"  "powersave"  "performance" or set "" for no change
-        }
+  module: 'MMM-NewPIR',
+  config: {
+    sensorPin: 21, // sensor pin out
+    delay: 60 * 1000, // delay for time out
+    turnOffDisplay: true, // turn off display
+    EconomyMode: true, // hide all modules
+    Governor : "" // Set CPU Governor : "conservative"  "ondemand"  "userspace"  "powersave"  "performance" or set "" for no chang
+  }
 },
 ```
 
@@ -48,6 +52,8 @@ To display the module insert it in the config.js file. Here is an example:
 
 ## Change Log
 
+### 2020-21-01
+- Correct possibility fix Gpio issue ?
 ### 2020-18-01
 - correct USER_PRESENCE { false } notification receive
 ### 2019-12-12
