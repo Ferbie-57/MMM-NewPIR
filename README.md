@@ -3,6 +3,10 @@ MMM-NewPIR is a module for the [MagicMirror](https://github.com/MichMich/MagicMi
 
 It uses a PIR sensor attached to your raspberry pi's GPIO pins to check for users. After a configurated time without any user interaction the display will turn off and hide all module for economy mode.
 
+If you don't have PIR sensor, it can also be used for automatic turn on / turn off screen.
+
+**[MMM-AssistantAMk2 v3 Ready](https://github.com/eouia/MMM-AssistantMk2/wiki/Prepared-recipes#with-mmm-newpirjs)**
+
 ## Installation
 Clone the module into your MagicMirror module folder and execute `npm intall` in the module's directory.
 ```
@@ -17,6 +21,7 @@ To display the module insert it in the config.js file. Here is an example:
 {
 	module: 'MMM-NewPIR',
         config: {
+		useSensor: true // set to false if you don't use sensor
 		sensorPin: 21, // sensor pin out
                 delay: 60 * 1000, // delay for time out
                 turnOffDisplay: true, // turn off display
@@ -43,6 +48,8 @@ To display the module insert it in the config.js file. Here is an example:
 
 ## Change Log
 
+### 2020-18-01
+- correct USER_PRESENCE { false } notification receive
 ### 2019-12-12
 - add useSensor feature
 ### 2019-12-11

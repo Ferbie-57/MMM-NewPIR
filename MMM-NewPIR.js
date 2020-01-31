@@ -54,7 +54,7 @@ Module.register("MMM-NewPIR", {
           if (payload == true) {
             this.resetCountdown()
             this.sendSocketNotification("WAKEUP")
-          } else ForceExpire()
+          } else this.ForceExpire()
           break
         default :
           break
