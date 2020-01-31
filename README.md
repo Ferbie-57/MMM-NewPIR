@@ -16,8 +16,9 @@ npm install
 ```
 
 ## Note for RPI4 user
-RPI4 firmware not support actually `vcgencmd display_power` command
-so, turn off display should not working
+RPI4 firmware not support actually `vcgencmd display_power` command.
+
+So, turn off display should not working
 
 ## Configuration
 To display the module insert it in the config.js file. Here is an example:
