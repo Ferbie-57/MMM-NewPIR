@@ -17,7 +17,7 @@
     "onoff": "^5.0.0"
   },
   "devDependencies": {
-    "electron-rebuild": "^1.8.8"
+    "electron-rebuild": "^1.10.0"
   },
   "repository": {
     "type": "git",
