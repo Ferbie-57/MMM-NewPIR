@@ -24,13 +24,16 @@ So, turn off display should not working
 To display the module insert it in the config.js file. Here is an example:
 ```
 {
-  module: 'MMM-NewPIR',
+ 	module: 'MMM-NewPIR',
+	position: 'top_left',
   config: {
-    sensorPin: 21, // sensor pin out
-    delay: 60 * 1000, // delay for time out
-    turnOffDisplay: true, // turn off display
-    EconomyMode: true, // hide all modules
-    Governor : "" // Set CPU Governor : "conservative"  "ondemand"  "userspace"  "powersave"  "performance" or set "" for no chang
+    useSensor: true,
+    sensorPin: 21,
+    delay: 2* 60 * 1000,
+    turnOffDisplay: true,
+    ecoMode: true,
+    governor: "",
+    debug: false
   }
 },
 ```
