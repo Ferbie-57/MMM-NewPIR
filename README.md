@@ -24,8 +24,8 @@ So, turn off display should not working
 To display the module insert it in the config.js file. Here is an example:
 ```
 {
- 	module: 'MMM-NewPIR',
-	position: 'top_left',
+  module: 'MMM-NewPIR',
+  position: 'top_left',
   config: {
     useSensor: true,
     sensorPin: 21,
