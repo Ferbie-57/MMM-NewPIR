@@ -29,6 +29,7 @@ To display the module insert it in the config.js file. Here is an example:
   config: {
     useSensor: true,
     sensorPin: 21,
+    reverseValue: false,
     delay: 2* 60 * 1000,
     turnOffDisplay: true,
     ecoMode: true,
@@ -44,6 +45,7 @@ To display the module insert it in the config.js file. Here is an example:
 | ------- | --- | --- | --- |
 | useSensor | Use sensor or not | Boolean | true |
 | sensorPin | BCM-number of the sensor pin | Integer | 21 |
+| reverseValue| Set it to `false` if sensor detect presence on value 1. Set it to `true` if sensor detect presence on value 0 | Bloolean | false |
 | delay | Time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 60000 (1 minutes) |
 | turnOffDisplay | Should the display turn off after timeout? | Boolean | true |
 | ecoMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
