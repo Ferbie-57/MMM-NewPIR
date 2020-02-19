@@ -46,7 +46,6 @@ module.exports = NodeHelper.create({
         this.initialize()
         break
       case "START":
-        console.log(this.conf)
         if (this.conf.sensor) this.pirStatus()
         break
       case "TIMER_EXPIRED":
