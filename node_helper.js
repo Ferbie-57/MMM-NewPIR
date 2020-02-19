@@ -30,7 +30,10 @@ module.exports = NodeHelper.create({
     }
     else console.log("[NewPIR] Init Display: Desactived.")
     this.setGovernor()
-    if (this.conf.sensor) console.log("[NewPIR] Sensor Active: pin " + this.conf.pin)
+    if (this.conf.sensor) {
+      console.log("[NewPIR] Sensor Active: pin " + this.conf.pin)
+      if (this.conf.reverse) console.log("[NewPIR] The reverse value read by the sensor is activated")
+    }
     else console.log("[NewPIR] Sensor: Desactived.")
     this.running = true
     console.log("[NewPIR] Initialize Complete.")
@@ -43,6 +46,7 @@ module.exports = NodeHelper.create({
         this.initialize()
         break
       case "START":
+        console.log(this.conf)
         if (this.conf.sensor) this.pirStatus()
         break
       case "TIMER_EXPIRED":
@@ -64,7 +68,8 @@ module.exports = NodeHelper.create({
     this.pir = new Gpio(this.conf.pin, 'in', 'both')
     this.pir.watch(function (err, value) {
       if (self.conf.debug) console.log("[NewPIR] Sensor read value: " + value)
-      if (value == 1) {
+      if ((value == 1 && !self.conf.reverse) || (value == 0 && self.conf.reverse)) {
+        if (self.conf.debug) console.log("[NewPIR] Presence detected with value:", value)
         self.sendSocketNotification("RESET_COUNTER")
         self.WantedDisplay(true)
         if (!self.running) {

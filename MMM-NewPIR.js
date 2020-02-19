@@ -7,6 +7,7 @@ Module.register("MMM-NewPIR", {
     defaults: {
       useSensor: true,
       sensorPin: 21,
+      reverseValue: false,
       delay: 2* 60 * 1000,
       turnOffDisplay: true,
       ecoMode: true,
@@ -22,6 +23,7 @@ Module.register("MMM-NewPIR", {
       this.helperConfig = {
           "sensor" : this.config.useSensor,
           "pin": this.config.sensorPin,
+          "reverse": this.config.reverseValue,
           "display": this.config.turnOffDisplay,
           "governor": this.config.governor,
           "debug": this.config.debug
