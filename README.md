@@ -57,6 +57,11 @@ To display the module insert it in the config.js file. Here is an example:
 
 ## Change Log
 
+### 2020-19-02
+- add reverseValue Feature : 
+  * Set it to `false` if sensor detect presence on value 1.
+  * Set it to `true` if sensor detect presence on value 0
+
 ### 2020-21-01
 - Correct possibility fix Gpio issue ?
 ### 2020-18-01
