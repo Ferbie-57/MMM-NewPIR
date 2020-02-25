@@ -1,5 +1,5 @@
 /********************************
-* node_helper for MMM_NewPir v2 *
+* node_helper for MMM_NewPIR v2 *
 * BuGsounet                     *
 ********************************/
 
@@ -7,6 +7,16 @@ const NodeHelper = require('node_helper')
 const exec = require('child_process').exec
 const fs = require('fs')
 const Gpio = require('onoff').Gpio
+const process = require('process')
+
+var _log = function() {
+    var context = "[NewPIR]"
+    return Function.prototype.bind.call(console.log, console, context)
+}()
+
+var log = function() {
+  //do nothing
+}
 
 module.exports = NodeHelper.create({
 
@@ -23,20 +33,32 @@ module.exports = NodeHelper.create({
 
   initialize: function() {
     console.log("[NewPIR] Initialize...")
+    var debug = (this.conf.debug) ? this.conf.debug : false
+    if (debug == true) log = _log
     if (this.conf.display) {
       this.WantedDisplay(true)
       this.sendSocketNotification("PRESENCE", true)
-      console.log("[NewPIR] Init Display: Done.")
+      log("Init Display: Done.")
     }
-    else console.log("[NewPIR] Init Display: Desactived.")
+    else log("Init Display: Desactived.")
     this.setGovernor()
     if (this.conf.sensor) {
-      console.log("[NewPIR] Sensor Active: pin " + this.conf.pin)
-      if (this.conf.reverse) console.log("[NewPIR] The reverse value read by the sensor is activated")
+      log("Sensor Active: pin " + this.conf.pin)
+      if (this.conf.reverse) log("The reverse value read by the sensor is activated")
     }
-    else console.log("[NewPIR] Sensor: Desactived.")
+    else log("Sensor: Desactived.")
     this.running = true
-    console.log("[NewPIR] Initialize Complete.")
+
+    process.on('beforeExit', (code) => {
+      console.log('[NewPIR] Thanks for using this addon')
+    });
+
+    process.on('exit', (code) => {
+      if (this.conf.display) this.WantedDisplay(true)
+      console.log('[NewPIR] ByeBye !')
+      console.log('[NewPIR] @bugsounet')
+    });
+    console.log("[NewPIR] Initialize Complete Version:", require('./package.json').version)
   },
 
   socketNotificationReceived: function (notification, payload) {
@@ -57,7 +79,7 @@ module.exports = NodeHelper.create({
         this.running = true
         this.sendSocketNotification("PRESENCE", true)
         if (this.conf.display) this.WantedDisplay(true)
-        if (this.conf.debug) console.log("[NewPIR] Wake Up Detected.")
+        log("Wake Up Detected.")
         break
     }
   },
@@ -66,9 +88,9 @@ module.exports = NodeHelper.create({
     var self = this
     this.pir = new Gpio(this.conf.pin, 'in', 'both')
     this.pir.watch(function (err, value) {
-      if (self.conf.debug) console.log("[NewPIR] Sensor read value: " + value)
+      log("Sensor read value: " + value)
       if ((value == 1 && !self.conf.reverse) || (value == 0 && self.conf.reverse)) {
-        if (self.conf.debug) console.log("[NewPIR] Presence detected with value:", value)
+        log("Presence detected with value:", value)
         self.sendSocketNotification("RESET_COUNTER")
         self.WantedDisplay(true)
         if (!self.running) {
@@ -84,37 +106,37 @@ module.exports = NodeHelper.create({
       if (err == null) {
         var displaySh = stdout.trim()
         var actual = Boolean(Number(displaySh.substr(displaySh.length -1)))
-        if (this.conf.debug) console.log("[NewPIR] Display -- Actual: " + actual + " - Wanted: " + wanted)
+        log("Display -- Actual: " + actual + " - Wanted: " + wanted)
         if (actual && !wanted) this.setDisplay(false)
         if (!actual && wanted) this.setDisplay(true)
       }
-      else console.log("[NewPIR] Display Error.")
+      else console.log("[NewPIR] Display Error: " + err)
     })
   },
 
   setDisplay: function(set) {
     if (set)  exec("/usr/bin/vcgencmd display_power 1")
     else exec("/usr/bin/vcgencmd display_power 0")
-    if (this.conf.debug) console.log("[NewPIR] Display " + (set ? "ON." : "OFF."))
+    log("Display " + (set ? "ON." : "OFF."))
   },
 
   setGovernor: function() {
-    if (!this.conf.governor) return console.log("[NewPIR] Init Governor : Desactived.")
+    if (!this.conf.governor) return log("Init Governor : Desactived.")
     else this.Governor.wanted = this.conf.governor
     exec("cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", (error, stdout, stderr) => {
-      if (error) return console.log("[NewPIR] Init Governor Error: Incompatible with your system.")
+      if (error) return log("Init Governor Error: Incompatible with your system.")
       stdout= stdout.replace(/\n|\r|(\n\r)/g,'')
       this.Governor.actual = stdout
-      if (this.Governor.actual == this.Governor.wanted) return console.log("[NewPIR] Init Governor: " + this.Governor.actual + " is already set.")
+      if (this.Governor.actual == this.Governor.wanted) return log("Init Governor: " + this.Governor.actual + " is already set.")
       else {
         for (let [item, value] of Object.entries(this.MyGovernor)) {
           if (value == this.Governor.wanted) {
             exec("echo " + value + " | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor")
             this.Governor.actived = true
-            return console.log("[NewPIR] Init Governor : " +  value + ".")
+            return log("Init Governor : " +  value + ".")
           }
         }
-        if (!this.Governor.actived) return console.log("[NewPIR] Init Governor Error : unknow Governor (" + this.conf.governor + ").")
+        if (!this.Governor.actived) return log("Init Governor Error : unknow Governor (" + this.conf.governor + ").")
       }
     })
   }

@@ -7,6 +7,9 @@ If you don't have PIR sensor, it can also be used for automatic turn on / turn o
 
 **[MMM-AssistantAMk2 v3 Ready](https://github.com/eouia/MMM-AssistantMk2/wiki/Prepared-recipes#with-mmm-newpirjs)**
 
+## Screenshoot
+![](https://raw.githubusercontent.com/bugsounet/MMM-NewPIR/master/screenshoot.png)
+
 ## Installation
 Clone the module into your MagicMirror module folder and execute `npm intall` in the module's directory.
 ```
@@ -22,7 +25,21 @@ So, turn off display should not working
 
 ## Configuration
 To display the module insert it in the config.js file. Here is an example:
+
+## Minimal configuration
+```js
+{
+  module: 'MMM-NewPIR',
+  position: 'top_left',
+  config: {
+    sensorPin: 21, // replace by your BCM-number of the sensor pin
+  }
+},
 ```
+## Personalized configuration
+this is the default configuration defined if you don't define any value
+
+```js
 {
   module: 'MMM-NewPIR',
   position: 'top_left',
@@ -34,6 +51,8 @@ To display the module insert it in the config.js file. Here is an example:
     turnOffDisplay: true,
     ecoMode: true,
     governor: "",
+    text: "Auto Turn Off Screen:",
+    counter: true,
     debug: false
   }
 },
@@ -46,16 +65,25 @@ To display the module insert it in the config.js file. Here is an example:
 | useSensor | Use sensor or not | Boolean | true |
 | sensorPin | BCM-number of the sensor pin | Integer | 21 |
 | reverseValue| Set it to `false` if sensor detect presence on value 1. Set it to `true` if sensor detect presence on value 0 | Bloolean | false |
-| delay | Time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 60000 (1 minutes) |
+| delay | Time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 120000 (2 minutes) |
 | turnOffDisplay | Should the display turn off after timeout? | Boolean | true |
 | ecoMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
 | governor | Set CPU Governor on start. Available : conservative ondemand userspace powersave performance or set "" for no change | String | "" |
+| text | Set the text beside the counter | string | "Auto Turn Off Screen:" |
+| counter | Display counter before turn screen off | Boolean | true |
 
 ## Developer Notes
 - This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
 - This module receive `USER_PRESENCE` notification with the payload `true` to force user presence or `false` to force delay to time out. 
 
 ## Change Log
+
+### 2020-25-02
+- Refact log for debug
+- Add auto turn on screen on exit
+- Add new features:
+  * counter : display counter or not
+  * text: text to display beside the counter
 
 ### 2020-19-02
 - add reverseValue Feature : 
