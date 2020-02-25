@@ -12,14 +12,23 @@ Module.register("MMM-NewPIR", {
       turnOffDisplay: true,
       ecoMode: true,
       governor: "",
+      text: "Auto Turn Off Screen:",
+      counter: true,
       debug: false
     },
 
     start: function () {
+      mylog_ = function() {
+        var context = "[NewPIR]"
+        return Function.prototype.bind.call(console.log, console, context)
+      }()
+
+      mylog = function() {
+        //do nothing
+      }
       this.counter = 0
       this.interval = null
-      console.log("[NewPIR] is now started")
-      this.config = this.configAssignment({}, this.defaults, this.config)
+      this.config = Object.assign({}, this.default, this.config)
       this.helperConfig = {
           "sensor" : this.config.useSensor,
           "pin": this.config.sensorPin,
@@ -28,7 +37,9 @@ Module.register("MMM-NewPIR", {
           "governor": this.config.governor,
           "debug": this.config.debug
       }
+      if (this.config.debug) mylog = mylog_
       this.sendSocketNotification("INIT", this.helperConfig)
+      mylog("is now started")
     },
 
     socketNotificationReceived: function (notification, payload) {
@@ -70,7 +81,7 @@ Module.register("MMM-NewPIR", {
 
       this.interval = setInterval(function () {
         self.counter -= 1000
-        var counter = document.querySelector("#NEWPIR.counter")
+        var counter = document.getElementById("NEWPIR_COUNTER")
         counter.textContent = new Date(self.counter).toUTCString().match(/\d{2}:\d{2}:\d{2}/)[0]
 
         if (self.counter <= 0) {
@@ -82,7 +93,7 @@ Module.register("MMM-NewPIR", {
 
     ForceExpire: function(){
       clearInterval(this.interval)
-      var counter = document.querySelector("#NEWPIR.counter")
+      var counter = document.getElementById("NEWPIR_COUNTER")
       counter.textContent = "00:00:00"
       this.counter = 0
       this.sendSocketNotification("TIMER_EXPIRED")
@@ -93,7 +104,7 @@ Module.register("MMM-NewPIR", {
       MM.getModules().enumerate(function(module) {
         module.hide(1000, {lockString: self.identifier})
       })
-      console.log("[NewPIR] Hide All modules.")
+      mylog("Hide All modules.")
     },
 
     Showing: function(payload) {
@@ -101,16 +112,26 @@ Module.register("MMM-NewPIR", {
       MM.getModules().enumerate(function(module) {
         module.show(1000, {lockString: self.identifier})
       })
-      console.log("[NewPIR] Show All modules.")
+      mylog("Show All modules.")
     },
 
     getDom: function () {
-      var wrapper = document.createElement("div")
-      wrapper.id = "NEWPIR"
-      if (!this.config.debug) wrapper.className = "hidden"
-      wrapper.classList.add("counter")
-      wrapper.textContent = "--:--:--"
-      return wrapper
+      var dom = document.createElement("div")
+      dom.id = "NEWPIR"
+      if (!this.config.counter) dom.className = "hidden"
+
+      var t = document.createElement("div")
+      t.id = "NEWPIR_TEXT"
+      t.textContent = this.config.text
+      dom.appendChild(t)
+
+      var c = document.createElement("div")
+      c.id = "NEWPIR_COUNTER"
+      c.classList.add("counter")
+      c.textContent = "--:--:--"
+      dom.appendChild(c)
+
+      return dom
     },
 
     getStyles: function () {
@@ -120,28 +141,5 @@ Module.register("MMM-NewPIR", {
     getScripts: function () {
       return ["moment.js"]
     },
-
-    configAssignment : function (result) {
-    var stack = Array.prototype.slice.call(arguments, 1)
-    var item
-    var key
-    while (stack.length) {
-      item = stack.shift()
-      for (key in item) {
-        if (item.hasOwnProperty(key)) {
-          if (typeof result[key] === "object" && result[key] && Object.prototype.toString.call(result[key]) !== "[object Array]" ) {
-              if (typeof item[key] === "object" && item[key] !== null) {
-                  result[key] = this.configAssignment({}, result[key], item[key])
-              } else {
-                result[key] = item[key]
-              }
-          } else {
-            result[key] = item[key]
-          }
-        }
-      }
-    }
-    return result
-  },
 
 });
