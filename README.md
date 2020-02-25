@@ -76,7 +76,7 @@ this is the default configuration defined if you don't define any value
 ## Change Log
 
 ### 2020-25-02
-- Refact core code
+- Refact log for debug
 - Add auto turn on screen on exit
 - Add new features:
   * counter : display counter or not
