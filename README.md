@@ -7,6 +7,9 @@ If you don't have PIR sensor, it can also be used for automatic turn on / turn o
 
 **[MMM-AssistantAMk2 v3 Ready](https://github.com/eouia/MMM-AssistantMk2/wiki/Prepared-recipes#with-mmm-newpirjs)**
 
+## Screenshoot
+![](https://raw.githubusercontent.com/bugsounet/MMM-NewPIR/master/screenshoot.png)
+
 ## Installation
 Clone the module into your MagicMirror module folder and execute `npm intall` in the module's directory.
 ```
