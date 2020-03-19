@@ -1,6 +1,6 @@
 {
   "name": "MMM-NewPIR",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Magic Mirror PIR Module",
   "main": "MMM-NewPIR.js",
   "scripts": {

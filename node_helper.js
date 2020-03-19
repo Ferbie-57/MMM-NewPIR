@@ -81,6 +81,22 @@ module.exports = NodeHelper.create({
         if (this.conf.display) this.WantedDisplay(true)
         log("Wake Up Detected.")
         break
+      case "WARNING":
+        console.log("[NewPIR] --------------------------------------------------------------")
+        console.log("[NewPIR] !! MMM-NewPIR is now deprecied with MMM-ASSISTANTMk2        !!")
+        console.log("[NewPIR] !! for better compatibility and sync with Assistant2Display !!")
+        console.log("[NewPIR] !! (example: youtube player)                                !!")
+        console.log("[NewPIR] !! please use screen/pir and other addons                   !!")
+        console.log("[NewPIR] !! for installing, more informations:                       !!")
+        console.log("[NewPIR] !! https://github.com/bugsounet/addons                      !!")
+        console.log("[NewPIR] !! @bugsounet                                               !!")
+        console.log("[NewPIR] !! if you have read this warning                            !!")
+        console.log("[NewPIR] !! and if you want to continue using this module            !!")
+        console.log("[NewPIR] !! You can add `force: true` in your NewPIR config          !!")
+        console.log("[NewPIR] --------------------------------------------------------------")
+        console.log("[NewPIR] !!              NewPIR IS ACTUALLY DESACTIVED               !!")
+        console.log("[NewPIR] --------------------------------------------------------------")
+        break
     }
   },
 

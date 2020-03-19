@@ -5,8 +5,6 @@ It uses a PIR sensor attached to your raspberry pi's GPIO pins to check for user
 
 If you don't have PIR sensor, it can also be used for automatic turn on / turn off screen.
 
-**[MMM-AssistantAMk2 v3 Ready](https://github.com/eouia/MMM-AssistantMk2/wiki/Prepared-recipes#with-mmm-newpirjs)**
-
 ## Screenshoot
 ![](https://raw.githubusercontent.com/bugsounet/MMM-NewPIR/master/screenshoot.png)
 
@@ -78,6 +76,10 @@ this is the default configuration defined if you don't define any value
 
 ## Change Log
 
+### 2020-03-19
+- deprecied with `MMM-AssistantMk2`
+ * please use AssistantMk2 [addons](https://github.com/bugsounet/addons) for better compatibility
+
 ### 2020-25-02
 - Refact log for debug
 - Add auto turn on screen on exit
@@ -99,4 +101,3 @@ this is the default configuration defined if you don't define any value
 ### 2019-12-11
 - V2 initial commit
 - Rewrite code
-
