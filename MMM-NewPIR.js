@@ -14,7 +14,8 @@ Module.register("MMM-NewPIR", {
       governor: "",
       text: "Auto Turn Off Screen:",
       counter: true,
-      debug: false
+      debug: false,
+      force: false
     },
 
     start: function () {
@@ -26,6 +27,7 @@ Module.register("MMM-NewPIR", {
       mylog = function() {
         //do nothing
       }
+      this.AMk2 = false
       this.counter = 0
       this.interval = null
       this.config = Object.assign({}, this.default, this.config)
@@ -38,8 +40,14 @@ Module.register("MMM-NewPIR", {
           "debug": this.config.debug
       }
       if (this.config.debug) mylog = mylog_
-      this.sendSocketNotification("INIT", this.helperConfig)
-      mylog("is now started")
+      if (!this.checkThis()) {
+        this.sendSocketNotification("INIT", this.helperConfig)
+        mylog("is now started!")
+      }
+      else {
+        mylog("desactived")
+        this.sendSocketNotification("WARNING")
+      }
     },
 
     socketNotificationReceived: function (notification, payload) {
@@ -60,8 +68,10 @@ Module.register("MMM-NewPIR", {
     notificationReceived: function (notification, payload) {
       switch(notification) {
         case "DOM_OBJECTS_CREATED":
-          this.resetCountdown()
-          this.sendSocketNotification("START")
+          if (!this.AMk2) {
+            this.resetCountdown()
+            this.sendSocketNotification("START")
+          }
           break
         case "USER_PRESENCE":
           if (payload == true) {
@@ -142,4 +152,15 @@ Module.register("MMM-NewPIR", {
       return ["moment.js"]
     },
 
+    checkThis: function() {
+      for (let [item, value] of Object.entries(config.modules)) {
+        if (value.module == "MMM-AssistantMk2") {
+          if (this.config.force) {
+            this.AMk2 = false
+            return false
+          } else this.AMk2 = true
+          return true
+        }
+      }
+    }
 });
