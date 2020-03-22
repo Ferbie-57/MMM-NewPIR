@@ -21,6 +21,8 @@ RPI4 firmware not support actually `vcgencmd display_power` command.
 
 So, turn off display should not working
 
+but you can try to use RPI4 support feature, it use `xset dpms` command (beta)
+
 ## Configuration
 To display the module insert it in the config.js file. Here is an example:
 
@@ -51,6 +53,7 @@ this is the default configuration defined if you don't define any value
     governor: "",
     text: "Auto Turn Off Screen:",
     counter: true,
+    rpi4: false,
     debug: false
   }
 },
@@ -69,12 +72,16 @@ this is the default configuration defined if you don't define any value
 | governor | Set CPU Governor on start. Available : conservative ondemand userspace powersave performance or set "" for no change | String | "" |
 | text | Set the text beside the counter | string | "Auto Turn Off Screen:" |
 | counter | Display counter before turn screen off | Boolean | true |
+| rpi4 | Beta support of RPI4 | Boolean | false |
 
 ## Developer Notes
 - This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
 - This module receive `USER_PRESENCE` notification with the payload `true` to force user presence or `false` to force delay to time out. 
 
 ## Change Log
+
+### 2020-03-22
+- Add RPI4 beta support feature
 
 ### 2020-03-19
 - deprecied with `MMM-AssistantMk2`
