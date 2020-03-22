@@ -15,6 +15,7 @@ Module.register("MMM-NewPIR", {
       text: "Auto Turn Off Screen:",
       counter: true,
       debug: false,
+      rpi4: false,
       force: false
     },
 
@@ -37,10 +38,11 @@ Module.register("MMM-NewPIR", {
           "reverse": this.config.reverseValue,
           "display": this.config.turnOffDisplay,
           "governor": this.config.governor,
+          "rpi4": this.config.rpi4,
           "debug": this.config.debug
       }
       if (this.config.debug) mylog = mylog_
-      if (!this.checkThis()) {
+      if (!this.checkAMk2()) {
         this.sendSocketNotification("INIT", this.helperConfig)
         mylog("is now started!")
       }
@@ -68,12 +70,12 @@ Module.register("MMM-NewPIR", {
     notificationReceived: function (notification, payload) {
       switch(notification) {
         case "DOM_OBJECTS_CREATED":
-          if (!this.AMk2) {
-            this.resetCountdown()
-            this.sendSocketNotification("START")
-          }
+          if (this.AMk2) return this.warning()
+          this.resetCountdown()
+          this.sendSocketNotification("START")
           break
         case "USER_PRESENCE":
+          if (this.AMk2) return
           if (payload == true) {
             this.resetCountdown()
             this.sendSocketNotification("WAKEUP")
@@ -84,19 +86,44 @@ Module.register("MMM-NewPIR", {
       }
     },
 
+    warning: function () {
+      var message= `<p>--------------------------------------------------------------<br>
+MMM-NewPIR is now deprecied with MMM-ASSISTANTMk2<br>
+for better compatibility<br>
+please use screen/pir and other addons<br>
+for installing, more informations:<br>
+https://github.com/bugsounet/addons<br>
+if you have read this warning<br>
+and if you want to continue using this module<br>
+You can add 'force: true,' in your NewPIR config<br>
+@bugsounet<br>
+--------------------------------------------------------------<br>
+!!              NewPIR IS ACTUALLY DESACTIVED               !!<br>
+--------------------------------------------------------------</p>`
+
+      var html = "<div class='NEWPIR_warning'>" + message + "</div>"
+      this.sendNotification("SHOW_ALERT", {
+        type: "notification",
+        message: html,
+        title: "MMM-NewPIR",
+        timer: 60 * 1000
+      })
+    },
+
     resetCountdown: function () {
-      var self = this
       clearInterval(this.interval)
+      this.interval = null
       this.counter = this.config.delay
 
-      this.interval = setInterval(function () {
-        self.counter -= 1000
+      this.interval = setInterval( ()=> {
+        this.counter -= 1000
         var counter = document.getElementById("NEWPIR_COUNTER")
-        counter.textContent = new Date(self.counter).toUTCString().match(/\d{2}:\d{2}:\d{2}/)[0]
+        counter.textContent = new Date(this.counter).toUTCString().match(/\d{2}:\d{2}:\d{2}/)[0]
 
-        if (self.counter <= 0) {
-          self.sendSocketNotification("TIMER_EXPIRED")
-          clearInterval(self.interval)
+        if (this.counter <= 0) {
+          this.sendSocketNotification("TIMER_EXPIRED")
+          clearInterval(this.interval)
+          this.interval = null
         }
       }, 1000)
     },
@@ -110,17 +137,15 @@ Module.register("MMM-NewPIR", {
     },
 
     Hiding: function() {
-      var self = this
-      MM.getModules().enumerate(function(module) {
-        module.hide(1000, {lockString: self.identifier})
+      MM.getModules().enumerate( (module)=> {
+        module.hide(1000, {lockString: this.identifier})
       })
       mylog("Hide All modules.")
     },
 
     Showing: function(payload) {
-      var self = this
-      MM.getModules().enumerate(function(module) {
-        module.show(1000, {lockString: self.identifier})
+      MM.getModules().enumerate( (module)=> {
+        module.show(1000, {lockString: this.identifier})
       })
       mylog("Show All modules.")
     },
@@ -152,7 +177,7 @@ Module.register("MMM-NewPIR", {
       return ["moment.js"]
     },
 
-    checkThis: function() {
+    checkAMk2: function() {
       for (let [item, value] of Object.entries(config.modules)) {
         if (value.module == "MMM-AssistantMk2") {
           if (this.config.force) {

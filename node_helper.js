@@ -35,8 +35,9 @@ module.exports = NodeHelper.create({
     console.log("[NewPIR] Initialize...")
     var debug = (this.conf.debug) ? this.conf.debug : false
     if (debug == true) log = _log
+    if (this.conf.display && this.conf.rpi4) this.setDisplay(true) // force use DPMS
     if (this.conf.display) {
-      this.WantedDisplay(true)
+      this.wantedDisplay(true)
       this.sendSocketNotification("PRESENCE", true)
       log("Init Display: Done.")
     }
@@ -54,7 +55,7 @@ module.exports = NodeHelper.create({
     });
 
     process.on('exit', (code) => {
-      if (this.conf.display) this.WantedDisplay(true)
+      if (this.conf.display) this.wantedDisplay(true)
       console.log('[NewPIR] ByeBye !')
       console.log('[NewPIR] @bugsounet')
     });
@@ -73,26 +74,25 @@ module.exports = NodeHelper.create({
       case "TIMER_EXPIRED":
         this.running = false
         this.sendSocketNotification("PRESENCE", false)
-        if (this.conf.display) this.WantedDisplay(false)
+        if (this.conf.display) this.wantedDisplay(false)
         break
       case "WAKEUP":
         this.running = true
         this.sendSocketNotification("PRESENCE", true)
-        if (this.conf.display) this.WantedDisplay(true)
+        if (this.conf.display) this.wantedDisplay(true)
         log("Wake Up Detected.")
         break
       case "WARNING":
         console.log("[NewPIR] --------------------------------------------------------------")
         console.log("[NewPIR] !! MMM-NewPIR is now deprecied with MMM-ASSISTANTMk2        !!")
-        console.log("[NewPIR] !! for better compatibility and sync with Assistant2Display !!")
-        console.log("[NewPIR] !! (example: youtube player)                                !!")
+        console.log("[NewPIR] !! for better compatibility                                 !!")
         console.log("[NewPIR] !! please use screen/pir and other addons                   !!")
         console.log("[NewPIR] !! for installing, more informations:                       !!")
         console.log("[NewPIR] !! https://github.com/bugsounet/addons                      !!")
-        console.log("[NewPIR] !! @bugsounet                                               !!")
         console.log("[NewPIR] !! if you have read this warning                            !!")
         console.log("[NewPIR] !! and if you want to continue using this module            !!")
         console.log("[NewPIR] !! You can add `force: true` in your NewPIR config          !!")
+        console.log("[NewPIR] !! @bugsounet                                               !!")
         console.log("[NewPIR] --------------------------------------------------------------")
         console.log("[NewPIR] !!              NewPIR IS ACTUALLY DESACTIVED               !!")
         console.log("[NewPIR] --------------------------------------------------------------")
@@ -103,37 +103,59 @@ module.exports = NodeHelper.create({
   pirStatus: function() {
     var self = this
     this.pir = new Gpio(this.conf.pin, 'in', 'both')
-    this.pir.watch(function (err, value) {
+    this.pir.watch( (err, value)=> {
       log("Sensor read value: " + value)
-      if ((value == 1 && !self.conf.reverse) || (value == 0 && self.conf.reverse)) {
+      if ((value == 1 && !this.conf.reverse) || (value == 0 && this.conf.reverse)) {
         log("Presence detected with value:", value)
-        self.sendSocketNotification("RESET_COUNTER")
-        self.WantedDisplay(true)
-        if (!self.running) {
-          self.sendSocketNotification("PRESENCE", true)
-          self.running = true
+        this.sendSocketNotification("RESET_COUNTER")
+        this.wantedDisplay(true)
+        if (!this.running) {
+          this.sendSocketNotification("PRESENCE", true)
+          this.running = true
         }
       }
     })
   },
 
-  WantedDisplay: function(wanted) {
-    exec("/usr/bin/vcgencmd display_power", (err, stdout, stderr)=> {
-      if (err == null) {
-        var displaySh = stdout.trim()
-        var actual = Boolean(Number(displaySh.substr(displaySh.length -1)))
-        log("Display -- Actual: " + actual + " - Wanted: " + wanted)
-        if (actual && !wanted) this.setDisplay(false)
-        if (!actual && wanted) this.setDisplay(true)
-      }
-      else console.log("[NewPIR] Display Error: " + err)
-    })
+  wantedDisplay: function(wanted) {
+    if (this.conf.rpi4) {
+      var actual = false
+      exec("DISPLAY=:0 xset q | grep Monitor", (err, stdout, stderr)=> {
+        if (err == null) {
+          let responseSh = stdout.trim()
+          var displaySh = responseSh.split(" ")[2]
+          if (displaySh == "On") actual = true
+          this.resultDisplay(actual,wanted)
+        }
+        else console.log("[NewPIR] RPI4 Display: " + err)
+      })
+    } else {
+      exec("/usr/bin/vcgencmd display_power", (err, stdout, stderr)=> {
+        if (err == null) {
+          var displaySh = stdout.trim()
+          var actual = Boolean(Number(displaySh.substr(displaySh.length -1)))
+          this.resultDisplay(actual,wanted)
+        }
+        else console.log("[NewPIR] Display: " + err)
+      })
+    }
+  },
+
+  resultDisplay: function(actual,wanted) {
+    log("Display -- Actual: " + actual + " - Wanted: " + wanted)
+    if (actual && !wanted) this.setDisplay(false)
+    if (!actual && wanted) this.setDisplay(true)
   },
 
   setDisplay: function(set) {
-    if (set)  exec("/usr/bin/vcgencmd display_power 1")
-    else exec("/usr/bin/vcgencmd display_power 0")
-    log("Display " + (set ? "ON." : "OFF."))
+    if (this.conf.rpi4) {
+      if (set) exec("DISPLAY=:0 xset dpms force on")
+      else exec("DISPLAY=:0 xset dpms force off")
+    } else {
+      if (set)  exec("/usr/bin/vcgencmd display_power 1")
+      else exec("/usr/bin/vcgencmd display_power 0")
+    }
+    log((this.conf.rpi4 ? "RPI 4 " : "") + "Display " + (set ? "ON." : "OFF."))
   },
 
   setGovernor: function() {
@@ -156,5 +178,4 @@ module.exports = NodeHelper.create({
       }
     })
   }
-
 });
