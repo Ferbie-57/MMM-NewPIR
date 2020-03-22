@@ -10,3 +10,8 @@
 #NEWPIR_TEXT {
   margin-right: 10px;
 }
+
+.NEWPIR_warning {
+  font-weight:normal;
+  font-size:0.8em;
+}
