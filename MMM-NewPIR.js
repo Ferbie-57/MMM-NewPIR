@@ -90,9 +90,9 @@ Module.register("MMM-NewPIR", {
       var message= `<p>--------------------------------------------------------------<br>
 MMM-NewPIR is now deprecied with MMM-ASSISTANTMk2<br>
 for better compatibility<br>
-please use screen/pir and other addons<br>
+please use MMM-Assistant2Display<br>
 for installing, more informations:<br>
-https://github.com/bugsounet/addons<br>
+https://github.com/bugsounet/MMM-Assistant2Display<br>
 if you have read this warning<br>
 and if you want to continue using this module<br>
 You can add 'force: true,' in your NewPIR config<br>
