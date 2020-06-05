@@ -44,16 +44,13 @@ this is the default configuration defined if you don't define any value
   module: 'MMM-NewPIR',
   position: 'top_left',
   config: {
-    useSensor: true,
     sensorPin: 21,
     reverseValue: false,
     delay: 2* 60 * 1000,
     turnOffDisplay: true,
     ecoMode: true,
-    governor: "",
     text: "Auto Turn Off Screen:",
     counter: true,
-    rpi4: false,
     debug: false
   }
 },
@@ -63,16 +60,12 @@ this is the default configuration defined if you don't define any value
 
 | Option  | Description | Type | Default |
 | ------- | --- | --- | --- |
-| useSensor | Use sensor or not | Boolean | true |
 | sensorPin | BCM-number of the sensor pin | Integer | 21 |
-| reverseValue| Set it to `false` if sensor detect presence on value 1. Set it to `true` if sensor detect presence on value 0 | Bloolean | false |
 | delay | Time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 120000 (2 minutes) |
 | turnOffDisplay | Should the display turn off after timeout? | Boolean | true |
 | ecoMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
-| governor | Set CPU Governor on start. Available : conservative ondemand userspace powersave performance or set "" for no change | String | "" |
 | text | Set the text beside the counter | string | "Auto Turn Off Screen:" |
 | counter | Display counter before turn screen off | Boolean | true |
-| rpi4 | Beta support of RPI4 | Boolean | false |
 
 ## Developer Notes
 - This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
@@ -80,31 +73,6 @@ this is the default configuration defined if you don't define any value
 
 ## Change Log
 
-### 2020-03-22
-- Add RPI4 beta support feature
-
-### 2020-03-19
-- deprecied with `MMM-AssistantMk2`
- * please use AssistantMk2 [addons](https://github.com/bugsounet/addons) for better compatibility
-
-### 2020-25-02
-- Refact log for debug
-- Add auto turn on screen on exit
-- Add new features:
-  * counter : display counter or not
-  * text: text to display beside the counter
-
-### 2020-19-02
-- add reverseValue Feature : 
-  * Set it to `false` if sensor detect presence on value 1.
-  * Set it to `true` if sensor detect presence on value 0
-
-### 2020-21-01
-- Correct possibility fix Gpio issue ?
-### 2020-18-01
-- correct USER_PRESENCE { false } notification receive
-### 2019-12-12
-- add useSensor feature
-### 2019-12-11
-- V2 initial commit
+### 2020-05-26
+- V3 initial commit
 - Rewrite code
