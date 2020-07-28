@@ -5,7 +5,7 @@
 
 Module.register("MMM-NewPIR", {
     defaults: {
-      debug: true,
+      debug: false,
       screen: {
         delay: 2 * 60 * 1000,
         turnOffDisplay: true,
