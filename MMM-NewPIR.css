@@ -1,6 +1,6 @@
 #NEWPIR {
   font-size: large;
-  display: flex;
+  /*display: flex;*/
 }
 
 #NEWPIR.hidden {
@@ -11,7 +11,44 @@
   margin-right: 10px;
 }
 
-.NEWPIR_warning {
-  font-weight:normal;
-  font-size:0.8em;
+#NEWPIR_SCREEN {
+  font-size: large;
+  display: flex;
 }
+
+#NEWPIR_BAR.hidden,
+#NEWPIR_SCREEN.hidden {
+  display: none;
+}
+
+#NEWPIR_SCREEN_TEXT {
+  margin-right: 10px;
+}
+
+
+#NEWPIR_SCREEN_BAR {
+  font-size: large;
+}
+
+#NEWPIR_SCREEN_BAR.Line {
+  height: 40px;
+}
+
+#NEWPIR_SCREEN_BAR.Circle {
+  width: 100px;
+  height: 93px;
+  top: 10px;
+}
+
+#NEWPIR_SCREEN_BAR.SemiCircle {
+  width: 100px;
+  top: 10px;
+}
+
+#NEWPIR_SCREEN_BAR.Bar {
+  margin-bottom:4px;
+  height: 4px;
+  width: 100%;
+  position:relative;
+}
+

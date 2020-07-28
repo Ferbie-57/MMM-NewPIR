@@ -5,23 +5,26 @@ It uses a PIR sensor attached to your raspberry pi's GPIO pins to check for user
 
 If you don't have PIR sensor, it can also be used for automatic turn on / turn off screen.
 
-## Screenshoot
+## What's new on V3 ?
+ * Rewrite entire main code
+ * New configuration
+ * Use my own shared npm library
+ * Add new display style
+ * More tools: incomming notification for developers 
+
+## Screenshot
 ![](https://raw.githubusercontent.com/bugsounet/MMM-NewPIR/master/screenshoot.png)
+
+![](https://raw.githubusercontent.com/bugsounet/MMM-NewPIR/master/screenshot_2.png)
 
 ## Installation
 Clone the module into your MagicMirror module folder and execute `npm intall` in the module's directory.
 ```
+cd ~/MagicMirror/modules
 git clone https://github.com/bugsounet/MMM-NewPIR.git
 cd MMM-NewPIR
 npm install
 ```
-
-## Note for RPI4 user
-RPI4 firmware not support actually `vcgencmd display_power` command.
-
-So, turn off display should not working
-
-but you can try to use RPI4 support feature, it use `xset dpms` command (beta)
 
 ## Configuration
 To display the module insert it in the config.js file. Here is an example:
@@ -32,7 +35,12 @@ To display the module insert it in the config.js file. Here is an example:
   module: 'MMM-NewPIR',
   position: 'top_left',
   config: {
-    sensorPin: 21, // replace by your BCM-number of the sensor pin
+      screen: {
+        delay: 2 * 60 * 1000
+      },
+      pir: {
+        gpio: 21
+      }, 
   }
 },
 ```
@@ -44,67 +52,92 @@ this is the default configuration defined if you don't define any value
   module: 'MMM-NewPIR',
   position: 'top_left',
   config: {
-    useSensor: true,
-    sensorPin: 21,
-    reverseValue: false,
-    delay: 2* 60 * 1000,
-    turnOffDisplay: true,
-    ecoMode: true,
-    governor: "",
-    text: "Auto Turn Off Screen:",
-    counter: true,
-    rpi4: false,
-    debug: false
+      debug: false,
+      screen: {
+        delay: 2 * 60 * 1000,
+        turnOffDisplay: true,
+        ecoMode: true,
+        displayCounter: true,
+        text: "Auto Turn Off Screen:",
+        displayBar: true,
+        displayStyle: "Text",
+        governorSleeping: false,
+        rpi4: false
+      },
+      pir: {
+        usePir: true,
+        gpio: 21,
+        reverseValue: false
+      },
+      governor: {
+        useGovernor: false,
+        sleeping: "powersave",
+        working: "ondemand"
+      }
   }
 },
 ```
 
-<br>
+### Field `screen: {}`
 
 | Option  | Description | Type | Default |
 | ------- | --- | --- | --- |
-| useSensor | Use sensor or not | Boolean | true |
-| sensorPin | BCM-number of the sensor pin | Integer | 21 |
-| reverseValue| Set it to `false` if sensor detect presence on value 1. Set it to `true` if sensor detect presence on value 0 | Bloolean | false |
-| delay | Time before the mirror turns off the display if no user activity is detected. (in ms) | Integer | 120000 (2 minutes) |
+| delay | Time before the mirror turns off the display if no user activity is detected. (in ms) | Number | 120000 |
 | turnOffDisplay | Should the display turn off after timeout? | Boolean | true |
 | ecoMode | Should the MagicMirror hide all module after timeout ? | Boolean | true |
-| governor | Set CPU Governor on start. Available : conservative ondemand userspace powersave performance or set "" for no change | String | "" |
-| text | Set the text beside the counter | string | "Auto Turn Off Screen:" |
-| counter | Display counter before turn screen off | Boolean | true |
-| rpi4 | Beta support of RPI4 | Boolean | false |
+| displayCounter | Should display Count-down in screen ? | Boolean | true |
+| text | Display a text near the counter | String | "Auto Turn Off Screen:" |
+| displayBar| Should display Count-up bar in screen ? | Boolean | true |
+| displayStyle| Style of the Count-down. Available: "Text", "Line", "SemiCircle", "Circle", "Bar" | String | Text |
+| governorSleeping| Activate sleeping governor when screen is off | Boolean | false |
+| rpi4| rpi4 support or activate DPMS support | Boolean | false |
+
+### Field `pir: {}`
+| Option  | Description | Type | Default |
+| ------- | --- | --- | --- |
+| usePir | activation of Pir sensor module | Boolean | true |
+| gpio | BCM-number of the sensor pin | Number | 21 |
+| reverseValue | presence detector value | Boolean | false |
+
+### Field `governor: {}`
+| Option  | Description | Type | Default |
+| ------- | --- | --- | --- |
+| useGovernor | When you set to true, you enable governor management | Boolean | true |
+| sleeping | name of the governor when screen is in sleeping state | String | powersave |
+| working | name of the governor when screen is actived | String | ondemand |
+
+Available governor:
+ * conservative
+ * ondemand
+ * userspace
+ * powersave
+ * performance
+ 
+Notes: On boot of your RPI, your governor is reset automaticaly to ondemand
 
 ## Developer Notes
-- This module broadcasts a `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable your module.
-- This module receive `USER_PRESENCE` notification with the payload `true` to force user presence or `false` to force delay to time out. 
+
+- This module broadcasts:
+  * `USER_PRESENCE` notification with the payload beeing `true` or `false` you can use it to pause or disable another module.
+- This module receive:
+  * `USER_PRESENCE` notification with the payload `true` to force user presence or `false` to force delay to time out. 
+  * `SCREEN_END` notification to force the end of the count down
+  * `SCREEN_WAKEUP` notification to wake up the screen and reset count down
+  * `SCREEN_LOCK` notification keep the screen on and lock it (freeze counter and stop pir detection) 
+  * `SCREEN_UNLOCK` notification unlock the screen and restart counter and pir detection
+
+## Update
+```
+cd ~/MagicMirror/modules/MMM-NewPIR
+git pull
+npm install
+```
+
+## Notes:
+ *rpi4 feature*: Now it's not needed, and work properly with lasted RPI firmware but if you want `DPMS` support you can use it
 
 ## Change Log
 
-### 2020-03-22
-- Add RPI4 beta support feature
-
-### 2020-03-19
-- deprecied with `MMM-AssistantMk2`
- * please use AssistantMk2 [addons](https://github.com/bugsounet/addons) for better compatibility
-
-### 2020-25-02
-- Refact log for debug
-- Add auto turn on screen on exit
-- Add new features:
-  * counter : display counter or not
-  * text: text to display beside the counter
-
-### 2020-19-02
-- add reverseValue Feature : 
-  * Set it to `false` if sensor detect presence on value 1.
-  * Set it to `true` if sensor detect presence on value 0
-
-### 2020-21-01
-- Correct possibility fix Gpio issue ?
-### 2020-18-01
-- correct USER_PRESENCE { false } notification receive
-### 2019-12-12
-- add useSensor feature
-### 2019-12-11
-- V2 initial commit
+### 2020-07-28
+- V3 initial commit
 - Rewrite code
