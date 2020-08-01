@@ -138,6 +138,9 @@ npm install
 
 ## Change Log
 
+### 2020-08-01
+- Add: config merge script
+
 ### 2020-07-28
 - V3 initial commit
 - Rewrite code

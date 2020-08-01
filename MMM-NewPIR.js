@@ -39,7 +39,7 @@ Module.register("MMM-NewPIR", {
         //do nothing
       }
 
-      this.config = Object.assign({}, this.defaults, this.config)
+      this.config = configMerge({}, this.defaults, this.config)
       if (this.config.debug) mylog = mylog_
       this.sendSocketNotification("INIT", this.config)
       mylog("is now started!")
@@ -151,7 +151,8 @@ Module.register("MMM-NewPIR", {
 
     getScripts: function () {
       return [
-        "/modules/MMM-NewPIR/scripts/progressbar.js"
+        "/modules/MMM-NewPIR/scripts/progressbar.js",
+        "/modules/MMM-NewPIR/scripts/configMerge.js"
       ]
     },
 
