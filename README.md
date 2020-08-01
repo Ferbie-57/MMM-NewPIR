@@ -5,8 +5,17 @@ It uses a PIR sensor attached to your raspberry pi's GPIO pins to check for user
 
 If you don't have PIR sensor, it can also be used for automatic turn on / turn off screen.
 
-## Screenshoot
+## What's new on V3 ?
+ * Rewrite entire main code
+ * New configuration
+ * Use my own shared npm library
+ * Add new display style
+ * More tools: incomming notification for developers 
+
+## Screenshot
 ![](https://raw.githubusercontent.com/bugsounet/MMM-NewPIR/master/screenshoot.png)
+
+![](https://raw.githubusercontent.com/bugsounet/MMM-NewPIR/master/screenshot_2.png)
 
 ## Installation
 Clone the module into your MagicMirror module folder and execute `npm intall` in the module's directory.
