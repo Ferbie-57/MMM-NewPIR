@@ -135,6 +135,9 @@ npm install
 
 ## Notes:
  *rpi4 feature*: Now it's not needed, and work properly with lasted RPI firmware but if you want `DPMS` support you can use it
+ 
+## Donate
+ [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TTHRH94Y4KL36&source=url), if you love this module !
 
 ## Change Log
 
